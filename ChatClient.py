@@ -12,7 +12,8 @@ my_trip = ''
 var_text = None
 my_text = None
 
-
+client_name = '[PIG Chat](https://github.com/MuRongPIG/CrossStreet-Python)'
+client_key = 'HXjURea2vReYejA'
 def var_append(var, data):
     # var.set(var.get() + '\n' + data)
     my_text.insert(INSERT, '\n' + data)
@@ -101,7 +102,7 @@ class MyClient(WebSocketClient):
         else:
             user = settings.username
             pswd = ''
-        req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "password":pswd, })
+        req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "password": pswd, "clientName": client_name, "clientKey": client_key,})
         self.send(req)
         connected = True
 
