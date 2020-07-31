@@ -1,7 +1,12 @@
-# 本客户端为@lanceliang2018 原客户端的新版适配版本，遵循原有的MIT开源协议。
 import json
 import os
-from ws4py.client.threadedclient import WebSocketClient
+try:
+    from ws4py.client.threadedclient import WebSocketClient
+except:
+    os.system('')
+    os.system('pip install -i https://pypi.tuna.tsinghua.edu.cn/simple ws4py')
+    print:('正在安装依赖...')
+
 import platform
 from tkinter import *
 from tkinter import messagebox
