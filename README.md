@@ -3,6 +3,6 @@
 
 ***
 #使用方法：
-将所有文件放至python的根目录下，然后可双击ChatClient.py运行。
+解压后双击ChatClient.py运行。
 ***
 本客户端为@lanceliang2018 原客户端的新版适配版本，遵循原有的MIT开源协议。
