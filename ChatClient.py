@@ -5,7 +5,7 @@ try:
 except:
     os.system('')
     os.system('pip install -i https://pypi.tuna.tsinghua.edu.cn/simple ws4py')
-    print:('正在安装依赖...')
+    print('正在安装依赖...')
 
 import platform
 from tkinter import *
@@ -104,16 +104,17 @@ class MyClient(WebSocketClient):
         if len(settings.password) > 0 :
             user = settings.username
             pswd = settings.password
+            req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "password": pswd, })
         else:
             user = settings.username
             pswd = ''
-        req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "password": pswd, "clientName": client_name, "clientKey": client_key,})
+            req = json.dumps({"cmd": "join", "channel": channel, "nick": user,})
         self.send(req)
         connected = True
 
     def closed(self, code, reason=None):
         global connected
-        # print("Closed down:", code, reason)
+        print("Closed down:", code, reason)
         connected = False
 
     def send_text(self, text):
