@@ -1,13 +1,8 @@
 import json
 import os
-try:
-    from ws4py.client.threadedclient import WebSocketClient
-except:
-    os.system('')
-    os.system('pip install -i https://pypi.tuna.tsinghua.edu.cn/simple ws4py')
-    print('正在安装依赖...')
-
+from ws4py.client.threadedclient import WebSocketClient
 import platform
+import emoji
 from tkinter import *
 from tkinter import messagebox
 
@@ -104,11 +99,11 @@ class MyClient(WebSocketClient):
         if len(settings.password) > 0 :
             user = settings.username
             pswd = settings.password
-            req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "password": pswd, })
+            req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "password": pswd, "clientName": client_name, "clientKey": client_key,})
         else:
             user = settings.username
             pswd = ''
-            req = json.dumps({"cmd": "join", "channel": channel, "nick": user,})
+            req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "clientName": client_name, "clientKey": client_key,})
         self.send(req)
         connected = True
 
@@ -132,6 +127,7 @@ class MyClient(WebSocketClient):
             return
         data = resp
         result = parse_cmds(data) + '\n'
+        result = emoji.demojize(result)
         # print(result)
         var_append(var_text, result)
 
