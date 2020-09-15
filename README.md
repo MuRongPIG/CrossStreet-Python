@@ -16,7 +16,8 @@
 ***
 TODO：
 1.添加ENGLISH支持
-2.添加hack.chat源
+2.~~添加hack.chat源~~
 
 ***
-本客户端为@lanceliang2018 原客户端的新版适配版本，遵循原有的MIT开源协议。
+本客户端遵循MIT开源协议。
+感谢@Lanceliang2018 的帮助。
