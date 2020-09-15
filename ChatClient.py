@@ -77,8 +77,11 @@ def parse_cmds(data):
         for u in data['nicks']:
             users = users + u + ','
         users = users[:-1]
-        return '欢迎来到十字街！请保证您已经阅读并同意了服务协议。\n如果您所在的聊天室没有在线的用户，' \
-               '可以尝试加入聊天室 ?公共聊天室\n在线的用户: ' + users
+        if api == 0:
+            return '欢迎来到十字街！请保证您已经阅读并同意了服务协议。\n如果您所在的聊天室没有在线的用户，' \
+                   '可以尝试加入聊天室 ?公共聊天室\n在线的用户: ' + users
+        if api == 1:
+            return 'Users online:' + users
     if cmd == 'info':
         return "信息：" + data['text']
     if cmd == 'warn':
@@ -134,6 +137,9 @@ class MyClient(WebSocketClient):
 
 class ChatClientSetup:
     def __init__(self, root=None):
+        global api 
+        api = 0
+        from tkinter import ttk
         self.root = root
         if self.root is None:
             self.root = Tk()
@@ -156,6 +162,8 @@ class ChatClientSetup:
 
         frame = Frame(top)
 
+        
+
         self.setup_user.set(str(self.settings.username))
         self.setup_password.set(str(self.settings.password))
         self.setup_channel.set(str(self.settings.channel))
@@ -166,9 +174,26 @@ class ChatClientSetup:
         Entry(frame, textvariable=self.setup_password).grid(row=2, column=2)
         Label(frame, text='房间(默认%s)' % channel_).grid(row=3, column=1)
         Entry(frame, textvariable=self.setup_channel).grid(row=3, column=2)
+        
+
+        def go(*args):
+            global api
+            if comboxlist.get() == "crosst.chat":
+                api = 0
+            elif comboxlist.get() == "hack.chat":
+                api = 1
+
+        comboxlist=ttk.Combobox(frame) #初始化  
+        comboxlist["values"]=("crosst.chat","hack.chat")  
+        comboxlist.current(0)  #选择第一个  
+        comboxlist.grid(row=4,column=2)
+        comboxlist.bind("<<ComboboxSelected>>",go)
+
+        
 
         frame.pack(side=TOP)
         Button(top, text='登录', command=self.setup_confirm).pack(side=BOTTOM, fill=X, expand=1)
+        
 
         top.mainloop()
 
@@ -181,11 +206,15 @@ class ChatClientSetup:
 
     def loop(self):
         self.root.mainloop()
+        
 
 
 class ChatClient:
     def __init__(self, root=None):
-        self.api = 'wss://ws.crosst.chat:35197/'
+        if api == 0:
+            self.api = 'wss://ws.crosst.chat:35197/'
+        if api == 1:
+            self.api = 'wss://hack.chat/chat-ws'
         self.settings = Settings()
 
         self.username = self.settings.username
