@@ -1,8 +1,10 @@
 import json
+# https://api.github.com/repos/MuRongPIG/CrossStreet-python/releases/latest?access_token=52f288af346824eb88c5db1afb8b3a8349772363
 import os
 from ws4py.client.threadedclient import WebSocketClient
 import platform
 import emoji
+import requests
 from tkinter import *
 from tkinter import messagebox
 
@@ -14,6 +16,7 @@ my_text = None
 
 client_name = '[PIG Chat](https://github.com/MuRongPIG/CrossStreet-Python)'
 client_key = 'HXjURea2vReYejA'
+
 def var_append(var, data):
     # var.set(var.get() + '\n' + data)
     my_text.insert(INSERT, '\n' + data)
@@ -93,6 +96,16 @@ def parse_cmds(data):
 
 class MyClient(WebSocketClient):
     def opened(self):
+        def update(): 
+            try:
+                update_api = 'https://api.github.com/repos/MuRongPIG/CrossStreet-python/releases/latest'
+                js = json.loads(requests.get(update_api).text)
+                tag_name = js.get('tag_name')
+                print(tag_name)
+                if tag_name != 'v1.2.1':
+                    var_append(var_text,'有新版本可用：' + tag_name + '\n' + '请前往https://github.com/MuRongPIG/CrossStreet-python/releases/latest 查看')
+            except:
+                    var_append(var_text,'检测更新失败')
         global connected
         settings = Settings()
         channel = settings.channel
@@ -108,6 +121,7 @@ class MyClient(WebSocketClient):
             pswd = ''
             req = json.dumps({"cmd": "join", "channel": channel, "nick": user, "clientName": client_name, "clientKey": client_key,})
         self.send(req)
+        update()
         connected = True
 
     def closed(self, code, reason=None):
@@ -189,11 +203,10 @@ class ChatClientSetup:
         comboxlist.grid(row=4,column=2)
         comboxlist.bind("<<ComboboxSelected>>",go)
 
-        
 
         frame.pack(side=TOP)
-        Button(top, text='登录', command=self.setup_confirm).pack(side=BOTTOM, fill=X, expand=1)
-        
+        btnn = Button(top, text='登录', command=self.setup_confirm)
+        btnn.pack(side=BOTTOM, fill=X, expand=1)
 
         top.mainloop()
 
@@ -247,6 +260,10 @@ class ChatClient:
 
         self.ws = None
         self.init_ws()
+        try:
+            update()
+        except:
+            pass
 
     def init_ws(self):
         self.ws = MyClient(self.api)
@@ -267,3 +284,4 @@ if __name__ == '__main__':
     _setup.loop()
     client = ChatClient()
     client.loop()
+
