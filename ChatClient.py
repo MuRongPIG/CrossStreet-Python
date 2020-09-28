@@ -70,7 +70,11 @@ def parse_cmds(data):
             my_trip = data['trip']
             if my_trip == 'null':
                 my_trip = ''
-        return "%s 加入聊天室" % data['nick']
+        if api == 0:
+            return "%s 加入聊天室" % data['nick'] + '\n' + '来自 %s' % data['client']
+        if api == 1:
+            return "%s 加入聊天室" % data['nick']
+
     if cmd == 'chat':
         if 'nick' in data and 'trip' in data:
             return "%s %s\n%s" % (data['trip'], data['nick'], data['text'])
@@ -78,11 +82,11 @@ def parse_cmds(data):
     if cmd == 'onlineSet':
         users = ''
         for u in data['nicks']:
-            users = users + u + ','
-        users = users[:-1]
+            users = users + u + ',' + m_settings.username
         if api == 0:
-            return '欢迎来到十字街！请保证您已经阅读并同意了服务协议。\n如果您所在的聊天室没有在线的用户，' \
-                   '可以尝试加入聊天室 ?公共聊天室\n在线的用户: ' + users
+            values = (data['ver'], data['cookie'])
+            return '欢迎来到十字街！请保证您已经阅读并同意了服务协议。\n当前聊天室版本： %s \n您的cookie：%s \n如果您所在的聊天室没有在线的用户，' \
+                   '可以尝试加入聊天室 ?公共聊天室\n在线的用户: ' % values + users
         if api == 1:
             return 'Users online:' + users
     if cmd == 'info':
@@ -102,8 +106,10 @@ class MyClient(WebSocketClient):
                 js = json.loads(requests.get(update_api).text)
                 tag_name = js.get('tag_name')
                 print(tag_name)
-                if tag_name != 'v1.2.1':
+                if tag_name != 'v1.2.2':
                     var_append(var_text,'有新版本可用：' + tag_name + '\n' + '请前往https://github.com/MuRongPIG/CrossStreet-python/releases/latest 查看')
+                else:
+                    var_append(var_text,'CrossStreet-Python 已是最新版本')
             except:
                     var_append(var_text,'检测更新失败')
         global connected
